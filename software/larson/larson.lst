@@ -1,0 +1,950 @@
+
+larson.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000043a  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .debug_aranges 00000020  00000000  00000000  0000048e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  2 .debug_pubnames 0000001b  00000000  00000000  000004ae  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_info   00000240  00000000  00000000  000004c9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_abbrev 0000009f  00000000  00000000  00000709  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_line   0000049a  00000000  00000000  000007a8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_frame  00000020  00000000  00000000  00000c44  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_str    00000106  00000000  00000000  00000c64  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_loc    0000088d  00000000  00000000  00000d6a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	17 c0       	rjmp	.+46     	; 0x32 <__bad_interrupt>
+   4:	16 c0       	rjmp	.+44     	; 0x32 <__bad_interrupt>
+   6:	15 c0       	rjmp	.+42     	; 0x32 <__bad_interrupt>
+   8:	14 c0       	rjmp	.+40     	; 0x32 <__bad_interrupt>
+   a:	13 c0       	rjmp	.+38     	; 0x32 <__bad_interrupt>
+   c:	12 c0       	rjmp	.+36     	; 0x32 <__bad_interrupt>
+   e:	11 c0       	rjmp	.+34     	; 0x32 <__bad_interrupt>
+  10:	10 c0       	rjmp	.+32     	; 0x32 <__bad_interrupt>
+  12:	0f c0       	rjmp	.+30     	; 0x32 <__bad_interrupt>
+  14:	0e c0       	rjmp	.+28     	; 0x32 <__bad_interrupt>
+  16:	0d c0       	rjmp	.+26     	; 0x32 <__bad_interrupt>
+  18:	0c c0       	rjmp	.+24     	; 0x32 <__bad_interrupt>
+  1a:	0b c0       	rjmp	.+22     	; 0x32 <__bad_interrupt>
+  1c:	0a c0       	rjmp	.+20     	; 0x32 <__bad_interrupt>
+  1e:	09 c0       	rjmp	.+18     	; 0x32 <__bad_interrupt>
+  20:	08 c0       	rjmp	.+16     	; 0x32 <__bad_interrupt>
+  22:	07 c0       	rjmp	.+14     	; 0x32 <__bad_interrupt>
+  24:	06 c0       	rjmp	.+12     	; 0x32 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf ed       	ldi	r28, 0xDF	; 223
+  2c:	cd bf       	out	0x3d, r28	; 61
+  2e:	02 d0       	rcall	.+4      	; 0x34 <main>
+  30:	02 c2       	rjmp	.+1028   	; 0x436 <_exit>
+
+00000032 <__bad_interrupt>:
+  32:	e6 cf       	rjmp	.-52     	; 0x0 <__vectors>
+
+00000034 <main>:
+#define shortdelay(); 			asm("nop\n\t" \
+"nop\n\t");
+
+
+int main (void)
+{
+  34:	2f 92       	push	r2
+  36:	3f 92       	push	r3
+  38:	4f 92       	push	r4
+  3a:	5f 92       	push	r5
+  3c:	6f 92       	push	r6
+  3e:	7f 92       	push	r7
+  40:	8f 92       	push	r8
+  42:	9f 92       	push	r9
+  44:	af 92       	push	r10
+  46:	bf 92       	push	r11
+  48:	cf 92       	push	r12
+  4a:	df 92       	push	r13
+  4c:	ef 92       	push	r14
+  4e:	ff 92       	push	r15
+  50:	0f 93       	push	r16
+  52:	1f 93       	push	r17
+  54:	df 93       	push	r29
+  56:	cf 93       	push	r28
+  58:	cd b7       	in	r28, 0x3d	; 61
+  5a:	de b7       	in	r29, 0x3e	; 62
+  5c:	ab 97       	sbiw	r28, 0x2b	; 43
+  5e:	0f b6       	in	r0, 0x3f	; 63
+  60:	f8 94       	cli
+  62:	de bf       	out	0x3e, r29	; 62
+  64:	0f be       	out	0x3f, r0	; 63
+  66:	cd bf       	out	0x3d, r28	; 61
+	uint8_t LEDs[9]; // Storage for current LED values
+
+	int8_t eyeLoc[5]; // List of which LED has each role, leading edge through tail.
+
+	uint8_t LEDBright[4] = {1U,4U,2U,1U};   // Relative brightness of scanning eye positions
+  68:	91 e0       	ldi	r25, 0x01	; 1
+  6a:	99 83       	std	Y+1, r25	; 0x01
+  6c:	84 e0       	ldi	r24, 0x04	; 4
+  6e:	8a 83       	std	Y+2, r24	; 0x02
+  70:	82 e0       	ldi	r24, 0x02	; 2
+  72:	8b 83       	std	Y+3, r24	; 0x03
+  74:	9c 83       	std	Y+4, r25	; 0x04
+	
+	
+	uint8_t LED0, LED1, LED2, LED3, LED4, LED5, LED6, LED7, LED8;
+	
+//Initialization routine: Clear watchdog timer-- this can prevent several things from going wrong.		
+MCUSR &= 0xF7;		//Clear WDRF Flag
+  76:	84 b7       	in	r24, 0x34	; 52
+  78:	87 7f       	andi	r24, 0xF7	; 247
+  7a:	84 bf       	out	0x34, r24	; 52
+WDTCSR	= 0x18;		//Set stupid bits so we can clear timer...
+  7c:	88 e1       	ldi	r24, 0x18	; 24
+  7e:	81 bd       	out	0x21, r24	; 33
+WDTCSR	= 0x00;
+  80:	11 bc       	out	0x21, r1	; 33
+//Data direction register: DDR's
+//Port A: 0, 1 are inputs.	
+//Port B: 0-3 are outputs, B4 is an input.	
+//Port D: 1-6 are outputs, D0 is an input.
+	
+	DDRA = 0U;
+  82:	1a ba       	out	0x1a, r1	; 26
+	DDRB = 15U;	
+  84:	8f e0       	ldi	r24, 0x0F	; 15
+  86:	87 bb       	out	0x17, r24	; 23
+	DDRD = 126U;
+  88:	8e e7       	ldi	r24, 0x7E	; 126
+  8a:	81 bb       	out	0x11, r24	; 17
+	
+	PORTA = 3;	// Pull-up resistors enabled, PA0, PA1
+  8c:	83 e0       	ldi	r24, 0x03	; 3
+  8e:	8b bb       	out	0x1b, r24	; 27
+	PORTB = 16;	// Pull-up resistor enabled, PA
+  90:	80 e1       	ldi	r24, 0x10	; 16
+  92:	88 bb       	out	0x18, r24	; 24
+	PORTD = 0;
+  94:	12 ba       	out	0x12, r1	; 18
+  96:	10 e0       	ldi	r17, 0x00	; 0
+  98:	0e ef       	ldi	r16, 0xFE	; 254
+  9a:	1f 8e       	std	Y+31, r1	; 0x1f
+  9c:	1e 8e       	std	Y+30, r1	; 0x1e
+  9e:	9d 8f       	std	Y+29, r25	; 0x1d
+  a0:	22 e0       	ldi	r18, 0x02	; 2
+  a2:	2c 8f       	std	Y+28, r18	; 0x1c
+  a4:	61 e0       	ldi	r22, 0x01	; 1
+  a6:	c6 2e       	mov	r12, r22
+  a8:	d1 2c       	mov	r13, r1
+  aa:	22 24       	eor	r2, r2
+  ac:	33 24       	eor	r3, r3
+		}
+   else 
+	{   
+		ILED = (127 - position) >> 4;  
+		MLED = (127 - position)  - (ILED << 4);
+		RLED =  15 - MLED;	
+  ae:	ae 01       	movw	r20, r28
+  b0:	46 5f       	subi	r20, 0xF6	; 246
+  b2:	5f 4f       	sbci	r21, 0xFF	; 255
+  b4:	5f a3       	std	Y+39, r21	; 0x27
+  b6:	4e a3       	std	Y+38, r20	; 0x26
+	}
+		 
+		j = 0;
+		while (j < 9) {
+  b8:	be 01       	movw	r22, r28
+  ba:	6d 5e       	subi	r22, 0xED	; 237
+  bc:	7f 4f       	sbci	r23, 0xFF	; 255
+  be:	7d a3       	std	Y+37, r23	; 0x25
+  c0:	6c a3       	std	Y+36, r22	; 0x24
+			
+			j++;
+		} 
+		  
+		j = 0;		// For each of the eye parts...
+		while (j < 4) {
+  c2:	ce 01       	movw	r24, r28
+  c4:	09 96       	adiw	r24, 0x09	; 9
+  c6:	99 a7       	std	Y+41, r25	; 0x29
+  c8:	88 a7       	std	Y+40, r24	; 0x28
+	speedLevel = 2;  // Range: 1, 2, 3
+	BrightMode = 0;
+	
+for (;;)  // main loop
+{
+	if ((PINA & 1) != 0) {
+  ca:	c8 9b       	sbis	0x19, 0	; 25
+  cc:	fe cf       	rjmp	.-4      	; 0xca <__SREG__+0x8b>
+	loopcount++;
+	
+	if (loopcount > delaytime)
+  ce:	0f 5f       	subi	r16, 0xFF	; 255
+  d0:	9e 8d       	ldd	r25, Y+30	; 0x1e
+  d2:	90 17       	cp	r25, r16
+  d4:	18 f0       	brcs	.+6      	; 0xdc <__SREG__+0x9d>
+  d6:	01 e0       	ldi	r16, 0x01	; 1
+  d8:	0e 8f       	std	Y+30, r16	; 0x1e
+  da:	ce c0       	rjmp	.+412    	; 0x278 <__stack+0x199>
+	{
+		loopcount = 0;
+		
+	if ((PINB & 16) == 0)
+  dc:	b4 9b       	sbis	0x16, 4	; 22
+  de:	06 c0       	rjmp	.+12     	; 0xec <__stack+0xd>
+  e0:	e1 e0       	ldi	r30, 0x01	; 1
+  e2:	ed 8f       	std	Y+29, r30	; 0x1d
+  e4:	51 e0       	ldi	r21, 0x01	; 1
+  e6:	c5 2e       	mov	r12, r21
+  e8:	d1 2c       	mov	r13, r1
+  ea:	24 c0       	rjmp	.+72     	; 0x134 <__stack+0x55>
+	{
+		debounce2++;
+  ec:	08 94       	sec
+  ee:	c1 1c       	adc	r12, r1
+  f0:	d1 1c       	adc	r13, r1
+		
+		if (debounce2 > 200) 
+  f2:	f9 ec       	ldi	r31, 0xC9	; 201
+  f4:	cf 16       	cp	r12, r31
+  f6:	d1 04       	cpc	r13, r1
+  f8:	60 f0       	brcs	.+24     	; 0x112 <__stack+0x33>
+		{   debounce2 = 0;
+			
+		 if (BrightMode == 0) 
+  fa:	23 28       	or	r2, r3
+  fc:	29 f0       	breq	.+10     	; 0x108 <__stack+0x29>
+  fe:	cc 24       	eor	r12, r12
+ 100:	dd 24       	eor	r13, r13
+ 102:	22 24       	eor	r2, r2
+ 104:	33 24       	eor	r3, r3
+ 106:	05 c0       	rjmp	.+10     	; 0x112 <__stack+0x33>
+ 108:	cc 24       	eor	r12, r12
+ 10a:	dd 24       	eor	r13, r13
+ 10c:	41 e0       	ldi	r20, 0x01	; 1
+ 10e:	24 2e       	mov	r2, r20
+ 110:	31 2c       	mov	r3, r1
+		 else
+			BrightMode = 0;
+			
+		}
+		
+		if (debounce)
+ 112:	ad 8c       	ldd	r10, Y+29	; 0x1d
+ 114:	aa 20       	and	r10, r10
+ 116:	71 f0       	breq	.+28     	; 0x134 <__stack+0x55>
+		{ 
+			speedLevel++;
+ 118:	2c 8d       	ldd	r18, Y+28	; 0x1c
+ 11a:	2f 5f       	subi	r18, 0xFF	; 255
+ 11c:	2c 8f       	std	Y+28, r18	; 0x1c
+			  
+			if ((speedLevel == 2) || (speedLevel == 3)) { 
+ 11e:	82 2f       	mov	r24, r18
+ 120:	82 50       	subi	r24, 0x02	; 2
+ 122:	82 30       	cpi	r24, 0x02	; 2
+ 124:	28 f0       	brcs	.+10     	; 0x130 <__stack+0x51>
+ 126:	31 e0       	ldi	r19, 0x01	; 1
+ 128:	3e 8f       	std	Y+30, r19	; 0x1e
+ 12a:	1d 8e       	std	Y+29, r1	; 0x1d
+ 12c:	3c 8f       	std	Y+28, r19	; 0x1c
+ 12e:	02 c0       	rjmp	.+4      	; 0x134 <__stack+0x55>
+ 130:	1e 8e       	std	Y+30, r1	; 0x1e
+ 132:	1d 8e       	std	Y+29, r1	; 0x1d
+	else{ 
+	debounce = 1;
+	debounce2 = 1;
+	}
+	    
+		position++;
+ 134:	1f 5f       	subi	r17, 0xFF	; 255
+		
+	 if (position == 128)	
+ 136:	10 38       	cpi	r17, 0x80	; 128
+ 138:	31 f4       	brne	.+12     	; 0x146 <__stack+0x67>
+	 {
+		 position = 0;
+		 
+	  if (direction == 0)
+ 13a:	4f 8d       	ldd	r20, Y+31	; 0x1f
+ 13c:	44 23       	and	r20, r20
+ 13e:	c1 f0       	breq	.+48     	; 0x170 <__stack+0x91>
+ 140:	10 e0       	ldi	r17, 0x00	; 0
+ 142:	1f 8e       	std	Y+31, r1	; 0x1f
+ 144:	03 c0       	rjmp	.+6      	; 0x14c <__stack+0x6d>
+		  direction = 1;
+	  else
+		  direction = 0; 
+	 }
+		 		
+	if (direction == 0)  // Moving to right, as viewed from front.
+ 146:	5f 8d       	ldd	r21, Y+31	; 0x1f
+ 148:	55 23       	and	r21, r21
+ 14a:	a9 f4       	brne	.+42     	; 0x176 <__stack+0x97>
+	{   
+		ILED = (15+position) >> 4; 
+ 14c:	81 2f       	mov	r24, r17
+ 14e:	90 e0       	ldi	r25, 0x00	; 0
+ 150:	0f 96       	adiw	r24, 0x0f	; 15
+ 152:	34 e0       	ldi	r19, 0x04	; 4
+ 154:	95 95       	asr	r25
+ 156:	87 95       	ror	r24
+ 158:	3a 95       	dec	r19
+ 15a:	e1 f7       	brne	.-8      	; 0x154 <__stack+0x75>
+ 15c:	98 2f       	mov	r25, r24
+		RLED = (15+position) - (ILED << 4);
+ 15e:	11 5f       	subi	r17, 0xF1	; 241
+ 160:	82 95       	swap	r24
+ 162:	80 7f       	andi	r24, 0xF0	; 240
+ 164:	71 2f       	mov	r23, r17
+ 166:	78 1b       	sub	r23, r24
+ 168:	1f 50       	subi	r17, 0x0F	; 15
+		MLED = 15 - RLED; 		
+ 16a:	3f e0       	ldi	r19, 0x0F	; 15
+ 16c:	37 1b       	sub	r19, r23
+ 16e:	15 c0       	rjmp	.+42     	; 0x19a <__stack+0xbb>
+ 170:	10 e0       	ldi	r17, 0x00	; 0
+ 172:	61 e0       	ldi	r22, 0x01	; 1
+ 174:	6f 8f       	std	Y+31, r22	; 0x1f
+		}
+   else 
+	{   
+		ILED = (127 - position) >> 4;  
+ 176:	8f e7       	ldi	r24, 0x7F	; 127
+ 178:	90 e0       	ldi	r25, 0x00	; 0
+ 17a:	81 1b       	sub	r24, r17
+ 17c:	91 09       	sbc	r25, r1
+ 17e:	24 e0       	ldi	r18, 0x04	; 4
+ 180:	95 95       	asr	r25
+ 182:	87 95       	ror	r24
+ 184:	2a 95       	dec	r18
+ 186:	e1 f7       	brne	.-8      	; 0x180 <__stack+0xa1>
+ 188:	98 2f       	mov	r25, r24
+		MLED = (127 - position)  - (ILED << 4);
+ 18a:	31 2f       	mov	r19, r17
+ 18c:	31 95       	neg	r19
+ 18e:	31 58       	subi	r19, 0x81	; 129
+ 190:	82 95       	swap	r24
+ 192:	80 7f       	andi	r24, 0xF0	; 240
+ 194:	38 1b       	sub	r19, r24
+		RLED =  15 - MLED;	
+ 196:	7f e0       	ldi	r23, 0x0F	; 15
+ 198:	73 1b       	sub	r23, r19
+ 19a:	fe 01       	movw	r30, r28
+ 19c:	3a 96       	adiw	r30, 0x0a	; 10
+	}
+		 
+		j = 0;
+		while (j < 9) {
+			LEDs[j] = 0; 
+ 19e:	11 92       	st	Z+, r1
+		MLED = (127 - position)  - (ILED << 4);
+		RLED =  15 - MLED;	
+	}
+		 
+		j = 0;
+		while (j < 9) {
+ 1a0:	ac a0       	ldd	r10, Y+36	; 0x24
+ 1a2:	bd a0       	ldd	r11, Y+37	; 0x25
+ 1a4:	ea 15       	cp	r30, r10
+ 1a6:	fb 05       	cpc	r31, r11
+ 1a8:	d1 f7       	brne	.-12     	; 0x19e <__stack+0xbf>
+ 1aa:	de 01       	movw	r26, r28
+ 1ac:	15 96       	adiw	r26, 0x05	; 5
+ 1ae:	59 2f       	mov	r21, r25
+ 1b0:	5e 5f       	subi	r21, 0xFE	; 254
+ 1b2:	49 2f       	mov	r20, r25
+ 1b4:	42 50       	subi	r20, 0x02	; 2
+ 1b6:	fd 01       	movw	r30, r26
+			   m = ILED + (2 - j);	// e.g., eyeLoc[0] = ILED + 2; 
+			else
+			   m = ILED + (j - 2);  // e.g., eyeLoc[0] = ILED - 2;
+			
+			if (m > 8)
+				m -= (2 * (m - 8));
+ 1b8:	08 e0       	ldi	r16, 0x08	; 8
+ 1ba:	e0 2e       	mov	r14, r16
+ 1bc:	f1 2c       	mov	r15, r1
+		}  
+		 
+		j = 0;
+		while (j < 5) {
+			
+			if (direction == 0) 
+ 1be:	bf 8c       	ldd	r11, Y+31	; 0x1f
+ 1c0:	bb 20       	and	r11, r11
+ 1c2:	11 f4       	brne	.+4      	; 0x1c8 <__stack+0xe9>
+ 1c4:	25 2f       	mov	r18, r21
+ 1c6:	01 c0       	rjmp	.+2      	; 0x1ca <__stack+0xeb>
+ 1c8:	24 2f       	mov	r18, r20
+			   m = ILED + (2 - j);	// e.g., eyeLoc[0] = ILED + 2; 
+			else
+			   m = ILED + (j - 2);  // e.g., eyeLoc[0] = ILED - 2;
+			
+			if (m > 8)
+ 1ca:	29 30       	cpi	r18, 0x09	; 9
+ 1cc:	5c f0       	brlt	.+22     	; 0x1e4 <__stack+0x105>
+				m -= (2 * (m - 8));
+ 1ce:	82 2f       	mov	r24, r18
+ 1d0:	99 27       	eor	r25, r25
+ 1d2:	87 fd       	sbrc	r24, 7
+ 1d4:	90 95       	com	r25
+ 1d6:	57 01       	movw	r10, r14
+ 1d8:	a8 1a       	sub	r10, r24
+ 1da:	b9 0a       	sbc	r11, r25
+ 1dc:	c5 01       	movw	r24, r10
+ 1de:	88 0f       	add	r24, r24
+ 1e0:	99 1f       	adc	r25, r25
+ 1e2:	28 0f       	add	r18, r24
+			
+			if (m < 0)
+				m *= -1;
+			
+			eyeLoc[j] = m;
+ 1e4:	27 fd       	sbrc	r18, 7
+ 1e6:	21 95       	neg	r18
+ 1e8:	21 93       	st	Z+, r18
+ 1ea:	51 50       	subi	r21, 0x01	; 1
+ 1ec:	4f 5f       	subi	r20, 0xFF	; 255
+			LEDs[j] = 0; 
+			j++;
+		}  
+		 
+		j = 0;
+		while (j < 5) {
+ 1ee:	8e a1       	ldd	r24, Y+38	; 0x26
+ 1f0:	9f a1       	ldd	r25, Y+39	; 0x27
+ 1f2:	e8 17       	cp	r30, r24
+ 1f4:	f9 07       	cpc	r31, r25
+ 1f6:	19 f7       	brne	.-58     	; 0x1be <__stack+0xdf>
+ 1f8:	ae 01       	movw	r20, r28
+ 1fa:	4f 5f       	subi	r20, 0xFF	; 255
+ 1fc:	5f 4f       	sbci	r21, 0xFF	; 255
+		} 
+		  
+		j = 0;		// For each of the eye parts...
+		while (j < 4) {
+			
+			LEDs[eyeLoc[j]]   += LEDBright[j]*RLED;			
+ 1fe:	ec 91       	ld	r30, X
+ 200:	ee 2e       	mov	r14, r30
+ 202:	ff 24       	eor	r15, r15
+ 204:	e7 fc       	sbrc	r14, 7
+ 206:	f0 94       	com	r15
+ 208:	fa 01       	movw	r30, r20
+ 20a:	21 91       	ld	r18, Z+
+ 20c:	af 01       	movw	r20, r30
+ 20e:	8a e0       	ldi	r24, 0x0A	; 10
+ 210:	a8 2e       	mov	r10, r24
+ 212:	b1 2c       	mov	r11, r1
+ 214:	ac 0e       	add	r10, r28
+ 216:	bd 1e       	adc	r11, r29
+ 218:	ea 0c       	add	r14, r10
+ 21a:	fb 1c       	adc	r15, r11
+ 21c:	87 2f       	mov	r24, r23
+ 21e:	62 2f       	mov	r22, r18
+ 220:	01 d1       	rcall	.+514    	; 0x424 <__mulqi3>
+ 222:	f7 01       	movw	r30, r14
+ 224:	90 81       	ld	r25, Z
+ 226:	98 0f       	add	r25, r24
+ 228:	90 83       	st	Z, r25
+			LEDs[eyeLoc[j+1]] += LEDBright[j]*MLED;			
+ 22a:	11 96       	adiw	r26, 0x01	; 1
+ 22c:	ec 91       	ld	r30, X
+ 22e:	11 97       	sbiw	r26, 0x01	; 1
+ 230:	ff 27       	eor	r31, r31
+ 232:	e7 fd       	sbrc	r30, 7
+ 234:	f0 95       	com	r31
+ 236:	ea 0d       	add	r30, r10
+ 238:	fb 1d       	adc	r31, r11
+ 23a:	83 2f       	mov	r24, r19
+ 23c:	62 2f       	mov	r22, r18
+ 23e:	f2 d0       	rcall	.+484    	; 0x424 <__mulqi3>
+ 240:	90 81       	ld	r25, Z
+ 242:	98 0f       	add	r25, r24
+ 244:	90 83       	st	Z, r25
+ 246:	11 96       	adiw	r26, 0x01	; 1
+			
+			j++;
+		} 
+		  
+		j = 0;		// For each of the eye parts...
+		while (j < 4) {
+ 248:	a8 a4       	ldd	r10, Y+40	; 0x28
+ 24a:	b9 a4       	ldd	r11, Y+41	; 0x29
+ 24c:	aa 15       	cp	r26, r10
+ 24e:	bb 05       	cpc	r27, r11
+ 250:	b1 f6       	brne	.-84     	; 0x1fe <__stack+0x11f>
+			LEDs[eyeLoc[j+1]] += LEDBright[j]*MLED;			
+			 
+			j++;
+		}  
+	
+	 LED0 = LEDs[0];
+ 252:	ba 84       	ldd	r11, Y+10	; 0x0a
+ 254:	bb 8e       	std	Y+27, r11	; 0x1b
+     LED1 = LEDs[1];
+ 256:	2b 85       	ldd	r18, Y+11	; 0x0b
+ 258:	2a 8f       	std	Y+26, r18	; 0x1a
+	 LED2 = LEDs[2];
+ 25a:	3c 85       	ldd	r19, Y+12	; 0x0c
+ 25c:	39 8f       	std	Y+25, r19	; 0x19
+	 LED3 = LEDs[3];
+ 25e:	4d 85       	ldd	r20, Y+13	; 0x0d
+ 260:	48 8f       	std	Y+24, r20	; 0x18
+	 LED4 = LEDs[4];
+ 262:	5e 85       	ldd	r21, Y+14	; 0x0e
+ 264:	5f 8b       	std	Y+23, r21	; 0x17
+	 LED5 = LEDs[5];
+ 266:	6f 85       	ldd	r22, Y+15	; 0x0f
+ 268:	6e 8b       	std	Y+22, r22	; 0x16
+	 LED6 = LEDs[6];
+ 26a:	78 89       	ldd	r23, Y+16	; 0x10
+ 26c:	7d 8b       	std	Y+21, r23	; 0x15
+	 LED7 = LEDs[7];
+ 26e:	89 89       	ldd	r24, Y+17	; 0x11
+ 270:	8c 8b       	std	Y+20, r24	; 0x14
+	 LED8 = LEDs[8];  
+ 272:	9a 89       	ldd	r25, Y+18	; 0x12
+ 274:	9b 8b       	std	Y+19, r25	; 0x13
+ 276:	00 e0       	ldi	r16, 0x00	; 0
+	}
+	 
+	if (BrightMode == 0)
+ 278:	21 14       	cp	r2, r1
+ 27a:	31 04       	cpc	r3, r1
+ 27c:	09 f1       	breq	.+66     	; 0x2c0 <__stack+0x1e1>
+ 27e:	80 e0       	ldi	r24, 0x00	; 0
+		 
+	  j = 0;
+	  while (j < 60){
+	  
+	  pt = 0;	
+	  if (LED0 > j) 
+ 280:	fb 8d       	ldd	r31, Y+27	; 0x1b
+ 282:	ef 2f       	mov	r30, r31
+ 284:	f0 e0       	ldi	r31, 0x00	; 0
+ 286:	f9 a3       	std	Y+33, r31	; 0x21
+ 288:	e8 a3       	std	Y+32, r30	; 0x20
+	  pt = 4; 
+	  if (LED1 > j) 
+ 28a:	ba 8c       	ldd	r11, Y+26	; 0x1a
+ 28c:	ab 2c       	mov	r10, r11
+ 28e:	bb 24       	eor	r11, r11
+ 290:	bb a2       	std	Y+35, r11	; 0x23
+ 292:	aa a2       	std	Y+34, r10	; 0x22
+	  pt |= 8;	
+	  if (LED2 > j) 
+ 294:	29 8d       	ldd	r18, Y+25	; 0x19
+ 296:	42 2e       	mov	r4, r18
+ 298:	55 24       	eor	r5, r5
+	  pt |= 16; 
+	  if (LED3 > j) 
+ 29a:	38 8d       	ldd	r19, Y+24	; 0x18
+ 29c:	63 2e       	mov	r6, r19
+ 29e:	77 24       	eor	r7, r7
+	  pt |= 32;		 
+	  if (LED4 > j) 
+ 2a0:	4f 89       	ldd	r20, Y+23	; 0x17
+ 2a2:	84 2e       	mov	r8, r20
+ 2a4:	99 24       	eor	r9, r9
+	  pt |= 64;
+	  
+	  PORTD = pt;
+	  
+	  pt = 16;	
+	  if (LED5 > j) 
+ 2a6:	5e 89       	ldd	r21, Y+22	; 0x16
+ 2a8:	a5 2e       	mov	r10, r21
+ 2aa:	bb 24       	eor	r11, r11
+	  pt |= 1;	
+	  if (LED6 > j) 
+ 2ac:	6d 89       	ldd	r22, Y+21	; 0x15
+ 2ae:	e6 2e       	mov	r14, r22
+ 2b0:	ff 24       	eor	r15, r15
+	  pt |= 2;	
+	  if (LED7 > j) 
+ 2b2:	7c 89       	ldd	r23, Y+20	; 0x14
+ 2b4:	a7 2f       	mov	r26, r23
+ 2b6:	b0 e0       	ldi	r27, 0x00	; 0
+	  pt |= 4;	
+	  if (LED8 > j) 
+ 2b8:	9b 89       	ldd	r25, Y+19	; 0x13
+ 2ba:	e9 2f       	mov	r30, r25
+ 2bc:	f0 e0       	ldi	r31, 0x00	; 0
+ 2be:	a6 c0       	rjmp	.+332    	; 0x40c <__stack+0x32d>
+	 LED6 = LEDs[6];
+	 LED7 = LEDs[7];
+	 LED8 = LEDs[8];  
+	}
+	 
+	if (BrightMode == 0)
+ 2c0:	20 e0       	ldi	r18, 0x00	; 0
+		{
+		 
+		//Multiplexing routine: Each LED is on (1/9) of the time. 
+		//  -> Use much less power.
+	 
+	if (LED0 > j) 
+ 2c2:	eb 8d       	ldd	r30, Y+27	; 0x1b
+ 2c4:	4e 2e       	mov	r4, r30
+ 2c6:	55 24       	eor	r5, r5
+			else	
+			PORTD = 0;
+//		shortdelay(); 	
+		
+			
+	if (LED1 > j) 
+ 2c8:	fa 8d       	ldd	r31, Y+26	; 0x1a
+ 2ca:	6f 2e       	mov	r6, r31
+ 2cc:	77 24       	eor	r7, r7
+		PORTD = 8;	
+	else	
+		PORTD = 0;	 
+			
+	if (LED2 > j) 
+ 2ce:	a9 8c       	ldd	r10, Y+25	; 0x19
+ 2d0:	8a 2c       	mov	r8, r10
+ 2d2:	99 24       	eor	r9, r9
+		PORTD = 16; 
+	else	
+		PORTD = 0; 
+			
+	if (LED3 > j) 
+ 2d4:	38 8d       	ldd	r19, Y+24	; 0x18
+ 2d6:	a3 2e       	mov	r10, r19
+ 2d8:	bb 24       	eor	r11, r11
+		PORTD = 32;	
+	else	
+		PORTD = 0;
+			
+	if (LED4 > j) 
+ 2da:	4f 89       	ldd	r20, Y+23	; 0x17
+ 2dc:	e4 2e       	mov	r14, r20
+ 2de:	ff 24       	eor	r15, r15
+		PORTD = 64;
+	else	
+		PORTD = 0;
+		 
+			
+	if (LED5 > j) {
+ 2e0:	5e 89       	ldd	r21, Y+22	; 0x16
+ 2e2:	a5 2f       	mov	r26, r21
+ 2e4:	b0 e0       	ldi	r27, 0x00	; 0
+		PORTD = 0;}
+			else	{
+		PORTB = 16;
+	PORTD = 0;		}
+			
+	if (LED6 > j) 
+ 2e6:	6d 89       	ldd	r22, Y+21	; 0x15
+ 2e8:	e6 2f       	mov	r30, r22
+ 2ea:	f0 e0       	ldi	r31, 0x00	; 0
+		PORTB = 18;	
+	else	
+		PORTB = 16;
+			
+	if (LED7 > j) 
+ 2ec:	8c 89       	ldd	r24, Y+20	; 0x14
+ 2ee:	68 2f       	mov	r22, r24
+ 2f0:	70 e0       	ldi	r23, 0x00	; 0
+		PORTB = 20;	
+	else	
+		PORTB = 16;
+			
+	if (LED8 > j) 
+ 2f2:	9b 89       	ldd	r25, Y+19	; 0x13
+ 2f4:	49 2f       	mov	r20, r25
+ 2f6:	50 e0       	ldi	r21, 0x00	; 0
+		{
+		 
+		//Multiplexing routine: Each LED is on (1/9) of the time. 
+		//  -> Use much less power.
+	 
+	if (LED0 > j) 
+ 2f8:	82 2f       	mov	r24, r18
+ 2fa:	99 27       	eor	r25, r25
+ 2fc:	87 fd       	sbrc	r24, 7
+ 2fe:	90 95       	com	r25
+ 300:	84 15       	cp	r24, r4
+ 302:	95 05       	cpc	r25, r5
+ 304:	1c f4       	brge	.+6      	; 0x30c <__stack+0x22d>
+		PORTD = 4; 
+ 306:	34 e0       	ldi	r19, 0x04	; 4
+ 308:	32 bb       	out	0x12, r19	; 18
+ 30a:	01 c0       	rjmp	.+2      	; 0x30e <__stack+0x22f>
+			else	
+			PORTD = 0;
+ 30c:	12 ba       	out	0x12, r1	; 18
+//		shortdelay(); 	
+		
+			
+	if (LED1 > j) 
+ 30e:	86 15       	cp	r24, r6
+ 310:	97 05       	cpc	r25, r7
+ 312:	1c f4       	brge	.+6      	; 0x31a <__stack+0x23b>
+		PORTD = 8;	
+ 314:	38 e0       	ldi	r19, 0x08	; 8
+ 316:	32 bb       	out	0x12, r19	; 18
+ 318:	01 c0       	rjmp	.+2      	; 0x31c <__stack+0x23d>
+	else	
+		PORTD = 0;	 
+ 31a:	12 ba       	out	0x12, r1	; 18
+			
+	if (LED2 > j) 
+ 31c:	88 15       	cp	r24, r8
+ 31e:	99 05       	cpc	r25, r9
+ 320:	1c f4       	brge	.+6      	; 0x328 <__stack+0x249>
+		PORTD = 16; 
+ 322:	30 e1       	ldi	r19, 0x10	; 16
+ 324:	32 bb       	out	0x12, r19	; 18
+ 326:	01 c0       	rjmp	.+2      	; 0x32a <__stack+0x24b>
+	else	
+		PORTD = 0; 
+ 328:	12 ba       	out	0x12, r1	; 18
+			
+	if (LED3 > j) 
+ 32a:	8a 15       	cp	r24, r10
+ 32c:	9b 05       	cpc	r25, r11
+ 32e:	1c f4       	brge	.+6      	; 0x336 <__stack+0x257>
+		PORTD = 32;	
+ 330:	30 e2       	ldi	r19, 0x20	; 32
+ 332:	32 bb       	out	0x12, r19	; 18
+ 334:	01 c0       	rjmp	.+2      	; 0x338 <__stack+0x259>
+	else	
+		PORTD = 0;
+ 336:	12 ba       	out	0x12, r1	; 18
+			
+	if (LED4 > j) 
+ 338:	8e 15       	cp	r24, r14
+ 33a:	9f 05       	cpc	r25, r15
+ 33c:	1c f4       	brge	.+6      	; 0x344 <__stack+0x265>
+		PORTD = 64;
+ 33e:	30 e4       	ldi	r19, 0x40	; 64
+ 340:	32 bb       	out	0x12, r19	; 18
+ 342:	01 c0       	rjmp	.+2      	; 0x346 <__stack+0x267>
+	else	
+		PORTD = 0;
+ 344:	12 ba       	out	0x12, r1	; 18
+		 
+			
+	if (LED5 > j) {
+ 346:	8a 17       	cp	r24, r26
+ 348:	9b 07       	cpc	r25, r27
+ 34a:	14 f4       	brge	.+4      	; 0x350 <__stack+0x271>
+		PORTB = 17;	 
+ 34c:	31 e1       	ldi	r19, 0x11	; 17
+ 34e:	01 c0       	rjmp	.+2      	; 0x352 <__stack+0x273>
+		PORTD = 0;}
+			else	{
+		PORTB = 16;
+ 350:	30 e1       	ldi	r19, 0x10	; 16
+ 352:	38 bb       	out	0x18, r19	; 24
+	PORTD = 0;		}
+ 354:	12 ba       	out	0x12, r1	; 18
+			
+	if (LED6 > j) 
+ 356:	8e 17       	cp	r24, r30
+ 358:	9f 07       	cpc	r25, r31
+ 35a:	14 f4       	brge	.+4      	; 0x360 <__stack+0x281>
+		PORTB = 18;	
+ 35c:	32 e1       	ldi	r19, 0x12	; 18
+ 35e:	01 c0       	rjmp	.+2      	; 0x362 <__stack+0x283>
+	else	
+		PORTB = 16;
+ 360:	30 e1       	ldi	r19, 0x10	; 16
+ 362:	38 bb       	out	0x18, r19	; 24
+			
+	if (LED7 > j) 
+ 364:	86 17       	cp	r24, r22
+ 366:	97 07       	cpc	r25, r23
+ 368:	14 f4       	brge	.+4      	; 0x36e <__stack+0x28f>
+		PORTB = 20;	
+ 36a:	34 e1       	ldi	r19, 0x14	; 20
+ 36c:	01 c0       	rjmp	.+2      	; 0x370 <__stack+0x291>
+	else	
+		PORTB = 16;
+ 36e:	30 e1       	ldi	r19, 0x10	; 16
+ 370:	38 bb       	out	0x18, r19	; 24
+			
+	if (LED8 > j) 
+ 372:	84 17       	cp	r24, r20
+ 374:	95 07       	cpc	r25, r21
+ 376:	1c f4       	brge	.+6      	; 0x37e <__stack+0x29f>
+		PORTB = 24;	
+ 378:	88 e1       	ldi	r24, 0x18	; 24
+ 37a:	88 bb       	out	0x18, r24	; 24
+ 37c:	02 c0       	rjmp	.+4      	; 0x382 <__stack+0x2a3>
+	else	
+		PORTB = 16; 
+ 37e:	90 e1       	ldi	r25, 0x10	; 16
+ 380:	98 bb       	out	0x18, r25	; 24
+		 
+		j++;
+ 382:	2f 5f       	subi	r18, 0xFF	; 255
+		if (speedLevel == 3)
+ 384:	3c 8d       	ldd	r19, Y+28	; 0x1c
+ 386:	33 30       	cpi	r19, 0x03	; 3
+ 388:	09 f4       	brne	.+2      	; 0x38c <__stack+0x2ad>
+			j++;
+ 38a:	2f 5f       	subi	r18, 0xFF	; 255
+		 PORTB = 16; 
+ 38c:	80 e1       	ldi	r24, 0x10	; 16
+ 38e:	88 bb       	out	0x18, r24	; 24
+	}
+	 
+	if (BrightMode == 0)
+	{
+		j = 0;
+		while (j < 60)
+ 390:	2c 33       	cpi	r18, 0x3C	; 60
+ 392:	0c f4       	brge	.+2      	; 0x396 <__stack+0x2b7>
+ 394:	b1 cf       	rjmp	.-158    	; 0x2f8 <__stack+0x219>
+ 396:	99 ce       	rjmp	.-718    	; 0xca <__SREG__+0x8b>
+ 398:	8a a5       	ldd	r24, Y+42	; 0x2a
+ 39a:	9b a5       	ldd	r25, Y+43	; 0x2b
+ 39c:	84 0f       	add	r24, r20
+ 39e:	95 1f       	adc	r25, r21
+		 
+	  j = 0;
+	  while (j < 60){
+	  
+	  pt = 0;	
+	  if (LED0 > j) 
+ 3a0:	68 a1       	ldd	r22, Y+32	; 0x20
+ 3a2:	79 a1       	ldd	r23, Y+33	; 0x21
+ 3a4:	86 17       	cp	r24, r22
+ 3a6:	97 07       	cpc	r25, r23
+ 3a8:	14 f0       	brlt	.+4      	; 0x3ae <__stack+0x2cf>
+ 3aa:	20 e0       	ldi	r18, 0x00	; 0
+ 3ac:	01 c0       	rjmp	.+2      	; 0x3b0 <__stack+0x2d1>
+ 3ae:	24 e0       	ldi	r18, 0x04	; 4
+	  pt = 4; 
+	  if (LED1 > j) 
+ 3b0:	6a a1       	ldd	r22, Y+34	; 0x22
+ 3b2:	7b a1       	ldd	r23, Y+35	; 0x23
+ 3b4:	86 17       	cp	r24, r22
+ 3b6:	97 07       	cpc	r25, r23
+ 3b8:	0c f4       	brge	.+2      	; 0x3bc <__stack+0x2dd>
+	  pt |= 8;	
+ 3ba:	28 60       	ori	r18, 0x08	; 8
+	  if (LED2 > j) 
+ 3bc:	84 15       	cp	r24, r4
+ 3be:	95 05       	cpc	r25, r5
+ 3c0:	0c f4       	brge	.+2      	; 0x3c4 <__stack+0x2e5>
+	  pt |= 16; 
+ 3c2:	20 61       	ori	r18, 0x10	; 16
+	  if (LED3 > j) 
+ 3c4:	86 15       	cp	r24, r6
+ 3c6:	97 05       	cpc	r25, r7
+ 3c8:	0c f4       	brge	.+2      	; 0x3cc <__stack+0x2ed>
+	  pt |= 32;		 
+ 3ca:	20 62       	ori	r18, 0x20	; 32
+	  if (LED4 > j) 
+ 3cc:	88 15       	cp	r24, r8
+ 3ce:	99 05       	cpc	r25, r9
+ 3d0:	0c f4       	brge	.+2      	; 0x3d4 <__stack+0x2f5>
+	  pt |= 64;
+ 3d2:	20 64       	ori	r18, 0x40	; 64
+	  
+	  PORTD = pt;
+ 3d4:	22 bb       	out	0x12, r18	; 18
+	  
+	  pt = 16;	
+	  if (LED5 > j) 
+ 3d6:	8a 15       	cp	r24, r10
+ 3d8:	9b 05       	cpc	r25, r11
+ 3da:	14 f0       	brlt	.+4      	; 0x3e0 <__stack+0x301>
+ 3dc:	20 e1       	ldi	r18, 0x10	; 16
+ 3de:	01 c0       	rjmp	.+2      	; 0x3e2 <__stack+0x303>
+ 3e0:	21 e1       	ldi	r18, 0x11	; 17
+	  pt |= 1;	
+	  if (LED6 > j) 
+ 3e2:	8e 15       	cp	r24, r14
+ 3e4:	9f 05       	cpc	r25, r15
+ 3e6:	0c f4       	brge	.+2      	; 0x3ea <__stack+0x30b>
+	  pt |= 2;	
+ 3e8:	22 60       	ori	r18, 0x02	; 2
+	  if (LED7 > j) 
+ 3ea:	8a 17       	cp	r24, r26
+ 3ec:	9b 07       	cpc	r25, r27
+ 3ee:	0c f4       	brge	.+2      	; 0x3f2 <__stack+0x313>
+	  pt |= 4;	
+ 3f0:	24 60       	ori	r18, 0x04	; 4
+	  if (LED8 > j) 
+ 3f2:	8e 17       	cp	r24, r30
+ 3f4:	9f 07       	cpc	r25, r31
+ 3f6:	0c f4       	brge	.+2      	; 0x3fa <__stack+0x31b>
+	  pt |= 8;			
+ 3f8:	28 60       	ori	r18, 0x08	; 8
+	  
+	  PORTB = pt;
+ 3fa:	28 bb       	out	0x18, r18	; 24
+	  
+	  j++;
+ 3fc:	3f 5f       	subi	r19, 0xFF	; 255
+ 3fe:	4f 5f       	subi	r20, 0xFF	; 255
+ 400:	5f 4f       	sbci	r21, 0xFF	; 255
+	  if (speedLevel == 3)
+ 402:	7c 8d       	ldd	r23, Y+28	; 0x1c
+ 404:	73 30       	cpi	r23, 0x03	; 3
+ 406:	51 f4       	brne	.+20     	; 0x41c <__stack+0x33d>
+	  j++;
+ 408:	83 2f       	mov	r24, r19
+ 40a:	8f 5f       	subi	r24, 0xFF	; 255
+ 40c:	38 2f       	mov	r19, r24
+ 40e:	40 e0       	ldi	r20, 0x00	; 0
+ 410:	50 e0       	ldi	r21, 0x00	; 0
+	}
+	 
+	if (BrightMode == 0)
+	{
+		j = 0;
+		while (j < 60)
+ 412:	99 27       	eor	r25, r25
+ 414:	87 fd       	sbrc	r24, 7
+ 416:	90 95       	com	r25
+ 418:	9b a7       	std	Y+43, r25	; 0x2b
+ 41a:	8a a7       	std	Y+42, r24	; 0x2a
+	
+	 else 
+	 {
+		 
+	  j = 0;
+	  while (j < 60){
+ 41c:	3c 33       	cpi	r19, 0x3C	; 60
+ 41e:	0c f4       	brge	.+2      	; 0x422 <__stack+0x343>
+ 420:	bb cf       	rjmp	.-138    	; 0x398 <__stack+0x2b9>
+ 422:	53 ce       	rjmp	.-858    	; 0xca <__SREG__+0x8b>
+
+00000424 <__mulqi3>:
+ 424:	00 24       	eor	r0, r0
+
+00000426 <__mulqi3_loop>:
+ 426:	80 fd       	sbrc	r24, 0
+ 428:	06 0e       	add	r0, r22
+ 42a:	66 0f       	add	r22, r22
+ 42c:	11 f0       	breq	.+4      	; 0x432 <__mulqi3_exit>
+ 42e:	86 95       	lsr	r24
+ 430:	d1 f7       	brne	.-12     	; 0x426 <__mulqi3_loop>
+
+00000432 <__mulqi3_exit>:
+ 432:	80 2d       	mov	r24, r0
+ 434:	08 95       	ret
+
+00000436 <_exit>:
+ 436:	f8 94       	cli
+
+00000438 <__stop_program>:
+ 438:	ff cf       	rjmp	.-2      	; 0x438 <__stop_program>
